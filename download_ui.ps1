@@ -1,0 +1,20 @@
+$screens = @(
+    @{ name = "splash.html"; url = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sX2QyMDViOTk3OGEyYjRhZDBiM2QzMTkzOTUwZTg0MmQxEgsSBxC2q4XJ9QkYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzI4MzY5NTk0NzQwMTAyODkwNg&filename=&opi=89354086" },
+    @{ name = "login.html"; url = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzVkMzJkODUyMTk2NzQ0ZTE5YzJlNzdkYWFlYjhkOTA5EgsSBxC2q4XJ9QkYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzI4MzY5NTk0NzQwMTAyODkwNg&filename=&opi=89354086" },
+    @{ name = "product_listing.html"; url = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzgxODAxNjM5OTIyNDRiZjdiOWViZTMzY2FiM2NmZDlkEgsSBxC2q4XJ9QkYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzI4MzY5NTk0NzQwMTAyODkwNg&filename=&opi=89354086" },
+    @{ name = "product_detail.html"; url = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sX2ViMGJiNmU4MjM2YzRiMTU5YTg4ZDAzNGViOWUwYTkwEgsSBxC2q4XJ9QkYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzI4MzY5NTk0NzQwMTAyODkwNg&filename=&opi=89354086" },
+    @{ name = "home.html"; url = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzY5MTVhYzExZjNiODRhNTBhZGE3MWE2MDM2MWZiMWIzEgsSBxC2q4XJ9QkYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzI4MzY5NTk0NzQwMTAyODkwNg&filename=&opi=89354086" },
+    @{ name = "register.html"; url = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sX2FmNzgxMjU3MzFkNjQwZTA5ZWM2ZDc5ZmU2Y2QyZTkzEgsSBxC2q4XJ9QkYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzI4MzY5NTk0NzQwMTAyODkwNg&filename=&opi=89354086" },
+    @{ name = "cart.html"; url = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzYyZjZlNDBlY2UyZDQ4ZTNhOGFiMWRlZTUyZDk4OTdiEgsSBxC2q4XJ9QkYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzI4MzY5NTk0NzQwMTAyODkwNg&filename=&opi=89354086" },
+    @{ name = "order_confirmation.html"; url = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzQwMjExMTk0MTE1OTQzMWJiOTc4NzE4OTkxYTMxYzMxEgsSBxC2q4XJ9QkYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzI4MzY5NTk0NzQwMTAyODkwNg&filename=&opi=89354086" },
+    @{ name = "checkout.html"; url = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sX2JhMWJiMmM1M2ViNTQwMmJhMGM0Y2NmMjRkZDMzNGJlEgsSBxC2q4XJ9QkYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzI4MzY5NTk0NzQwMTAyODkwNg&filename=&opi=89354086" },
+    @{ name = "profile.html"; url = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzdmY2RhODJkMjA5MTQyNDVhYTIyNWMzODZkZGJhZWY2EgsSBxC2q4XJ9QkYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzI4MzY5NTk0NzQwMTAyODkwNg&filename=&opi=89354086" },
+    @{ name = "wishlist.html"; url = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzA1ZTM0MzkxNjkyYjQyYmJhNjZiNjRhYzkyMGE1Y2U5EgsSBxC2q4XJ9QkYAZIBJAoKcHJvamVjdF9pZBIWQhQxMDEyNTI3MTk1OTMzODc2Mzc2NA&filename=&opi=89354086" },
+    @{ name = "settings.html"; url = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzU5ZmFmYjdhMDA5OTRlOTJhYTJkM2FlZTJiYzgyZWQ2EgsSBxC2q4XJ9QkYAZIBIwoKcHJvamVjdF9pZBIVQhMxMjY1NjY0NTU1NjkyODY5OTMw&filename=&opi=89354086" },
+    @{ name = "search.html"; url = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sX2NkODhkYmVjZDJjYjQzOTZiOWQyMDFlYzRkZjJhZWQxEgsSBxC2q4XJ9QkYAZIBIwoKcHJvamVjdF9pZBIVQhMxMjY1NjY0NTU1NjkyODY5OTMw&filename=&opi=89354086" }
+)
+
+foreach ($screen in $screens) {
+    Write-Host "Downloading $($screen.name)..."
+    curl.exe -L $screen.url -o "mahdhiya_ui/$($screen.name)"
+}
