@@ -81,7 +81,7 @@ class ProfileScreen extends StatelessWidget {
                               shape: BoxShape.circle,
                               border: Border.all(color: const Color(0xFFBAEAFF), width: 3),
                               image: const DecorationImage(
-                                image: NetworkImage('https://lh3.googleusercontent.com/aida-public/AB6AXuCIfjZT9TL6_Ut8m2ulHbfwm1DVT72Spb7Dyzchdek1v935vC3lUIBNJYysrNXjUAjPwzNwQCbfXKpj92lJqGhXu67ZllYlsPV8xnkihCIfPiQ5MLaLrZwXAq3kxxWZksSxLH5btBT1GdiPNBklS7NNf6bnT16gjlo6np5EjohR12INBD12RgqkVFxjRqTz5sC1M2pTbuixIiBhNuFP3zs4ELKLlhGcMf_Y0ocoZTh5PCaGWYvBukNu4qRedOwDGWIJb0PSg3zWQVRK'),
+                                image: AssetImage('assets/images/profile_avatar.jpg'),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -106,14 +106,14 @@ class ProfileScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Sarah J.',
+                              provider.userName,
                               style: textTheme.headlineLarge?.copyWith(
                                 color: AppTheme.primary,
                                 fontSize: 24,
                               ),
                             ),
                             Text(
-                              'sarah.jansen@example.com',
+                              provider.userEmail,
                               style: textTheme.bodySmall?.copyWith(color: AppTheme.outline),
                             ),
                             const SizedBox(height: 12),

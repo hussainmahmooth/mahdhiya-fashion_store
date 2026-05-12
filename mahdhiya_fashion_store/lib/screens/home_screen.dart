@@ -57,8 +57,8 @@ class HomeScreen extends StatelessWidget {
                 clipBehavior: Clip.antiAlias,
                 child: Stack(
                   children: [
-                    Image.network(
-                      'https://lh3.googleusercontent.com/aida-public/AB6AXuBtS4_f2cGbiBUq3G81biEchxNxhqGxjI9wTky-C2oQ6Ju4xWl3aPH1JMfAgUCEW5F8lWzlRh37dGotcOz6DuG127b3fzT4gIpREsGDuWbgYvi07WR40HdIFA2BSB9xiHxf-Up1EjvkOnLDjh9lffX_w9IfZJFs5XLmdzPIyiNVqzTFkvUn1p4ITzs6LZjY6xl4mcLteXAtiO1jXIWnUh6chTOcXdqlLLdejnXGpwrABq22L9ja-NheAEVizpAc325duZnprRdGCRrF',
+                    Image.asset(
+                      'assets/images/hero_banner.jpg',
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
@@ -141,10 +141,10 @@ class HomeScreen extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
-                  _buildCategoryItem(context, 'Dresses', 'https://lh3.googleusercontent.com/aida-public/AB6AXuBaMk7Px_L2UzJibNmzyCl4zOfWnxMETuthIH9M1PaxnscxZzy0ke5yH13LHLknvbbAk7qr_ewNj1Yxow8wc6swN0W6lAbGNbG8D24NksPgrXZF04-UcJgP5mymtvj0ROluFeszroWA5ThvT8tFMw6mFBvCZ-w3ajiUehDdlck7OTTHOU3cbelnHbHw_1KJW99bqmrlqXEas12bHlu8ik5ZQSUpOk1lss9g-0JucYc7FysH-gZPL_O_ZaX889xB_8YsRkvWcDkUWF49'),
-                  _buildCategoryItem(context, 'Tops', 'https://lh3.googleusercontent.com/aida-public/AB6AXuCE6YHNyogvtnzsQ0l6w_-T7qNR4x0pSYlY2CbMdNiFEAF_OELHDuE6W7lk_laJP5PkrtMhSxrybtMcJno-fJ4KvrYLFGgMb0AomLLLjJ6l2IZL6MqG-8Adz0q_Mk6Bu0CsIjeh5q9Rkig7XxjiXCX51eD4J4ityurvKZYVJVe95rwJxnUaBJEl5wr-r1AVvFR5PUZPvsqt3d-ILjUFfLhGQqpgSlnSyarOgpe4viM7OlNx6wulAi_LaZsGTO75EnOAT33H_xWT75hL'),
-                  _buildCategoryItem(context, 'Outerwear', 'https://lh3.googleusercontent.com/aida-public/AB6AXuB7-GPyXz09DaXNPfR9ujiccHAUb_HY-hFvEXzLDAtGGuSaZpRXLcaCcGFAemGa5I5wjVV1aGQ3hiuh6K91Zk0BQR91T91P-7V4pW_EHrzdDqm9bPM_uwPUbSnegIjSMQB6S2OekKd4veav2hAkkp1Voa9zNHEUFoN1ieduDJUZKQb7EnET-8e3KIU6CJxzRrTMM0GEixXA-flNhhgMEUt8teK130wJAvWaw_-qA6pA2UK5JrTv1vtScWV9oNOLUvKScC6RdndBRLiH'),
-                  _buildCategoryItem(context, 'Accessories', 'https://lh3.googleusercontent.com/aida-public/AB6AXuCyJeFgnT9zkbYuBaRlQXu2vg1NEp82aJJx6tb6a_sFvyx6tnLPrc77kMqnOhxfVjdab2MRX8Y1oQpDSe4rLF3h-WWEB1qQfeR0gi0jHN3f2PJzoXg2aR-FsuJYAj3YUyTzODjCB_JEB0JtoMwemNOVR5APJm3v8c-cZM08DJpZnAwdXwZXM2BQOafMqWbKJcf02OFnyhQexv28HG55JEPCUYoyNIzDx_NBDZCXztxr5LBMakt_ZMkZxPRsvz9K-0D9wtxmxavhrpK4'),
+                  _buildCategoryItem(context, 'Dresses', 'assets/images/cat_dresses.jpg'),
+                  _buildCategoryItem(context, 'Tops', 'assets/images/cat_tops.jpg'),
+                  _buildCategoryItem(context, 'Outerwear', 'assets/images/cat_outerwear.jpg'),
+                  _buildCategoryItem(context, 'Accessories', 'assets/images/cat_accessories.jpg'),
                 ],
               ),
             ),
@@ -249,8 +249,8 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    Image.network(
-                      'https://lh3.googleusercontent.com/aida-public/AB6AXuCtqsptQcJnlGa-0E1e9sSbysUlE2mbte_K1RbQyTnF_EuV2G90goEJKFQ6bNxOOQ07cCh8PTWN2PDD3pkSBnngCB-uaYHzZhvv2yKDNtr1HopZ0P0pTyLVmOvjP8rMLEqP7VQcQz-wzHAvsSI2Kae9a66Ri95LP0cQe09Hjwh2Qu5DkitrnqKycOw8pZgUz19axxLtPcQU4IIm7DRDM84uj__QEUCEB2Qucrkf8O-EfsONlfy1-RyrDxUHJBcjK8EqrYFzUnS7UjRW',
+                    Image.asset(
+                      'assets/images/member_exclusive.jpg',
                       width: 100,
                       fit: BoxFit.contain,
                     ),
@@ -301,7 +301,7 @@ class HomeScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                  image: NetworkImage(imageUrl),
+                  image: AssetImage(imageUrl),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -323,7 +323,11 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildProductItem(BuildContext context, String id, String title, String price, String imageUrl) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/product_detail'),
+      onTap: () => Navigator.pushNamed(
+        context, 
+        '/product_detail',
+        arguments: id,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -334,7 +338,7 @@ class HomeScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
                     image: DecorationImage(
-                      image: NetworkImage(imageUrl),
+                      image: AssetImage(imageUrl),
                       fit: BoxFit.cover,
                     ),
                     boxShadow: [

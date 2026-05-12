@@ -13,8 +13,8 @@ class SplashScreen extends StatelessWidget {
         children: [
           // Background Imagery
           Positioned.fill(
-            child: Image.network(
-              'https://lh3.googleusercontent.com/aida-public/AB6AXuD2mM74KV6TRnuToVlNWzV9YZGwI-kuhWBZQcBv2c7UhBxGRAzizwGxs4zZ0tS5YyGgtqg_bPCtbAVwK-suFSdlFUbJ578xefFMrIi-Ka2ndVutFnsPvvUQ0lAJ_XgOvnL8GbrtqHBELG2X0nMc8Wbww646T4gbJr9Lh3HcN_i4MaAsMWnfUAr32fKhF_FPcDXdwo_9Vl8WIcQDi0uTpan7YujGq2xb9s-gvDXNsHJm5pjDzG6t2k8q6riOy2UQJSSn-5K9HcdECoqT',
+            child: Image.asset(
+              'assets/images/splash_image.jpg',
               fit: BoxFit.cover,
             ),
           ),

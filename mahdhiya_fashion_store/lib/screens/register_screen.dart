@@ -1,8 +1,31 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import 'package:provider/provider.dart';
+import '../providers/app_provider.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  bool _termsAccepted = false;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,177 +139,226 @@ class RegisterScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Create Account',
-                                style: textTheme.headlineLarge?.copyWith(
-                                  color: AppTheme.primary,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Step into a world of serene sophistication.',
-                                style: textTheme.bodySmall?.copyWith(
-                                  color: AppTheme.outline,
-                                ),
-                              ),
-                              const SizedBox(height: 32),
-                              
-                              // Full Name Field
-                              const _Label(text: 'Full Name'),
-                              const SizedBox(height: 8),
-                              const _TextField(
-                                hint: 'Evelyn Harper',
-                                keyboardType: TextInputType.name,
-                              ),
-                              const SizedBox(height: 20),
-                              
-                              // Email Field
-                              const _Label(text: 'Email'),
-                              const SizedBox(height: 8),
-                              const _TextField(
-                                hint: 'evelyn@fashion.com',
-                                keyboardType: TextInputType.emailAddress,
-                              ),
-                              const SizedBox(height: 20),
-                              
-                              // Password Fields
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: const [
-                                        _Label(text: 'Password'),
-                                        SizedBox(height: 8),
-                                        _TextField(
-                                          hint: '••••••••',
-                                          obscureText: true,
-                                        ),
-                                      ],
-                                    ),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Create Account',
+                                  style: textTheme.headlineLarge?.copyWith(
+                                    color: AppTheme.primary,
                                   ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: const [
-                                        _Label(text: 'Confirm'),
-                                        SizedBox(height: 8),
-                                        _TextField(
-                                          hint: '••••••••',
-                                          obscureText: true,
-                                        ),
-                                      ],
-                                    ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Step into a world of serene sophistication.',
+                                  style: textTheme.bodySmall?.copyWith(
+                                    color: AppTheme.outline,
                                   ),
-                                ],
-                              ),
-                              const SizedBox(height: 24),
-                              
-                              // Terms Checkbox
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: 24,
-                                    width: 24,
-                                    child: Checkbox(
-                                      value: false,
-                                      onChanged: (val) {},
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      side: BorderSide(
-                                        color: AppTheme.secondary.withOpacity(0.3),
+                                ),
+                                const SizedBox(height: 32),
+                                
+                                // Full Name Field
+                                const _Label(text: 'Full Name'),
+                                const SizedBox(height: 8),
+                                _TextField(
+                                  controller: _nameController,
+                                  hint: 'Evelyn Harper',
+                                  keyboardType: TextInputType.name,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) return 'Please enter your name';
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 20),
+                                
+                                // Email Field
+                                const _Label(text: 'Email'),
+                                const SizedBox(height: 8),
+                                _TextField(
+                                  controller: _emailController,
+                                  hint: 'evelyn@fashion.com',
+                                  keyboardType: TextInputType.emailAddress,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) return 'Please enter your email';
+                                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                                      return 'Please enter a valid email';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 20),
+                                
+                                // Password Fields
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const _Label(text: 'Password'),
+                                          const SizedBox(height: 8),
+                                          _TextField(
+                                            controller: _passwordController,
+                                            hint: '••••••••',
+                                            obscureText: true,
+                                            validator: (value) {
+                                              if (value == null || value.isEmpty) return 'Enter password';
+                                              if (value.length < 6) return 'Min 6 chars';
+                                              return null;
+                                            },
+                                          ),
+                                        ],
                                       ),
                                     ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const _Label(text: 'Confirm'),
+                                          const SizedBox(height: 8),
+                                          _TextField(
+                                            controller: _confirmPasswordController,
+                                            hint: '••••••••',
+                                            obscureText: true,
+                                            validator: (value) {
+                                              if (value != _passwordController.text) return 'Mismatch';
+                                              return null;
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 24),
+                                
+                                // Terms Checkbox
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 24,
+                                      width: 24,
+                                      child: Checkbox(
+                                        value: _termsAccepted,
+                                        onChanged: (val) {
+                                          setState(() {
+                                            _termsAccepted = val ?? false;
+                                          });
+                                        },
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        side: BorderSide(
+                                          color: AppTheme.secondary.withOpacity(0.3),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: RichText(
+                                        text: TextSpan(
+                                          style: textTheme.bodySmall?.copyWith(
+                                            color: AppTheme.outline,
+                                            height: 1.5,
+                                          ),
+                                          children: [
+                                            const TextSpan(text: 'I agree to the '),
+                                            TextSpan(
+                                              text: 'Terms and Conditions',
+                                              style: TextStyle(
+                                                color: AppTheme.secondary,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            const TextSpan(text: ' and '),
+                                            TextSpan(
+                                              text: 'Privacy Policy',
+                                              style: TextStyle(
+                                                color: AppTheme.secondary,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            const TextSpan(text: '.'),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 32),
+                                
+                                // Sign Up Button
+                                ElevatedButton(
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      if (!_termsAccepted) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Please accept the terms')),
+                                        );
+                                        return;
+                                      }
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Creating account...')),
+                                      );
+                                      context.read<AppProvider>().login(
+                                        _emailController.text,
+                                        _nameController.text,
+                                      );
+                                      Navigator.pushReplacementNamed(context, '/home');
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppTheme.primary,
+                                    foregroundColor: Colors.white,
+                                    minimumSize: const Size(double.infinity, 56),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    elevation: 8,
+                                    shadowColor: AppTheme.primary.withOpacity(0.2),
                                   ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
+                                  child: Text(
+                                    'SIGN UP',
+                                    style: textTheme.labelLarge?.copyWith(
+                                      letterSpacing: 2.0,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                
+                                // Sign In Link
+                                Center(
+                                  child: GestureDetector(
+                                    onTap: () => Navigator.pop(context),
                                     child: RichText(
                                       text: TextSpan(
                                         style: textTheme.bodySmall?.copyWith(
                                           color: AppTheme.outline,
-                                          height: 1.5,
                                         ),
                                         children: [
-                                          const TextSpan(text: 'I agree to the '),
+                                          const TextSpan(text: 'Already have an account? '),
                                           TextSpan(
-                                            text: 'Terms and Conditions',
+                                            text: 'Sign In',
                                             style: TextStyle(
-                                              color: AppTheme.secondary,
-                                              fontWeight: FontWeight.w500,
+                                              color: AppTheme.primary,
+                                              fontWeight: FontWeight.w600,
+                                              decoration: TextDecoration.underline,
+                                              decorationColor: AppTheme.secondary.withOpacity(0.3),
                                             ),
                                           ),
-                                          const TextSpan(text: ' and '),
-                                          TextSpan(
-                                            text: 'Privacy Policy',
-                                            style: TextStyle(
-                                              color: AppTheme.secondary,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          const TextSpan(text: '.'),
                                         ],
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                              const SizedBox(height: 32),
-                              
-                              // Sign Up Button
-                              ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppTheme.primary,
-                                  foregroundColor: Colors.white,
-                                  minimumSize: const Size(double.infinity, 56),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  elevation: 8,
-                                  shadowColor: AppTheme.primary.withOpacity(0.2),
                                 ),
-                                child: Text(
-                                  'SIGN UP',
-                                  style: textTheme.labelLarge?.copyWith(
-                                    letterSpacing: 2.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 24),
-                              
-                              // Sign In Link
-                              Center(
-                                child: GestureDetector(
-                                  onTap: () => Navigator.pop(context),
-                                  child: RichText(
-                                    text: TextSpan(
-                                      style: textTheme.bodySmall?.copyWith(
-                                        color: AppTheme.outline,
-                                      ),
-                                      children: [
-                                        const TextSpan(text: 'Already have an account? '),
-                                        TextSpan(
-                                          text: 'Sign In',
-                                          style: TextStyle(
-                                            color: AppTheme.primary,
-                                            fontWeight: FontWeight.w600,
-                                            decoration: TextDecoration.underline,
-                                            decorationColor: AppTheme.secondary.withOpacity(0.3),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                         const SizedBox(height: 80),
@@ -322,18 +394,24 @@ class _TextField extends StatelessWidget {
   final String hint;
   final bool obscureText;
   final TextInputType? keyboardType;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
 
   const _TextField({
     required this.hint,
     this.obscureText = false,
     this.keyboardType,
+    this.controller,
+    this.validator,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
+      validator: validator,
       style: Theme.of(context).textTheme.bodyMedium,
       decoration: InputDecoration(
         hintText: hint,
@@ -341,6 +419,7 @@ class _TextField extends StatelessWidget {
         filled: true,
         fillColor: Colors.white.withOpacity(0.5),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        errorStyle: const TextStyle(fontSize: 10),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: AppTheme.secondary.withOpacity(0.2)),

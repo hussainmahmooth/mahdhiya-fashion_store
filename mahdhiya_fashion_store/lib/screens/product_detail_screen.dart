@@ -10,6 +10,11 @@ class ProductDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    final provider = context.watch<AppProvider>();
+
+    // Get product ID from arguments
+    final productId = ModalRoute.of(context)?.settings.arguments as String? ?? 'silk-midi-dress';
+    final product = provider.getProductById(productId);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -31,17 +36,12 @@ class ProductDetailScreen extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: CircleAvatar(
               backgroundColor: Colors.white.withOpacity(0.8),
-              child: Consumer<AppProvider>(
-                builder: (context, provider, _) {
-                  final isWishlisted = provider.isInWishlist('silk-midi-dress');
-                  return IconButton(
-                    icon: Icon(
-                      isWishlisted ? Icons.favorite : Icons.favorite_border,
-                      color: isWishlisted ? Colors.red : AppTheme.secondary,
-                    ),
-                    onPressed: () => provider.toggleWishlist('silk-midi-dress'),
-                  );
-                },
+              child: IconButton(
+                icon: Icon(
+                  provider.isInWishlist(product.id) ? Icons.favorite : Icons.favorite_border,
+                  color: provider.isInWishlist(product.id) ? Colors.red : AppTheme.secondary,
+                ),
+                onPressed: () => provider.toggleWishlist(product.id),
               ),
             ),
           ),
@@ -58,12 +58,13 @@ class ProductDetailScreen extends StatelessWidget {
                 children: [
                   PageView(
                     children: [
-                      Image.network(
-                        'https://lh3.googleusercontent.com/aida-public/AB6AXuARlxH4JLTDeSMu3rQLieuzQsZPie3Ww2EcEgU8KZvuJfLqG3Kt2eZmrYE4nHtH64qZWD-JU6iTkBoo0-2iFz3psLBK7cFAdo6WSJ0OYxmV9eedD4DtHWtpYk4CO1P7TqyM0r-XTbBCGVAIcYOn-zPdIhRWFRZMqiCEqp5cHf5V7xBjNI2-fpJ-udiS9-jm3V_NYd0YJ81j7Uf_12VsPQhtfO7tRxg5daVRhKA-8506Of8_zGdEZpbFOR-7RbcTgGfklAAuyKhcxJ_0',
+                      Image.asset(
+                        product.imageUrl,
                         fit: BoxFit.cover,
                       ),
-                      Image.network(
-                        'https://lh3.googleusercontent.com/aida-public/AB6AXuCEXme-YUnVY3uVm2xUywBZlsLOmOfFwSn1moXBPtB0ViYHtIe_PE3WfgSl6ZVgwwxdGKXKdpcKxtFVQGa-3Ae03OTlehJrH9jaRyuIA3K4VCih777r1wBr7hmcdr5wEpaWyNKERIfjjVOMMqdgPt0PrLiJgelzZ98UQXcPuU_F32ENeX_1eOyLzZAthCLjvLmX7NiBbYeD6KQO2hsr3U0QInyIbGUAxwbW_sdTZZoneXd6sxj6nunNA_Q9lAEu63xaonxbzI1D2-f9',
+                      // Fallback or secondary image if exists, otherwise reuse primary
+                      Image.asset(
+                        product.imageUrl,
                         fit: BoxFit.cover,
                       ),
                     ],
@@ -92,15 +93,6 @@ class ProductDetailScreen extends StatelessWidget {
                             shape: BoxShape.circle,
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        Container(
-                          width: 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.6),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -113,16 +105,34 @@ class ProductDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'NEW ARRIVAL',
-                    style: textTheme.labelLarge?.copyWith(
-                      color: AppTheme.secondary,
-                      letterSpacing: 2.0,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        product.category.toUpperCase(),
+                        style: textTheme.labelLarge?.copyWith(
+                          color: AppTheme.secondary,
+                          letterSpacing: 2.0,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.star, color: Color(0xFFFFB400), size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            product.rating.toString(),
+                            style: textTheme.labelLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.onSurface,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Silk Wrap Midi Dress',
+                    product.name,
                     style: textTheme.headlineLarge?.copyWith(
                       color: const Color(0xFF1A237E),
                       fontWeight: FontWeight.w600,
@@ -130,7 +140,7 @@ class ProductDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    r'$129.00',
+                    product.price,
                     style: textTheme.headlineMedium?.copyWith(
                       color: AppTheme.primary,
                       fontWeight: FontWeight.bold,
@@ -140,7 +150,7 @@ class ProductDetailScreen extends StatelessWidget {
                   
                   // Color Selection
                   Text(
-                    'COLOR: NAVY',
+                    'COLOR',
                     style: textTheme.labelLarge?.copyWith(
                       color: AppTheme.onSurface,
                       letterSpacing: 1.0,
@@ -197,11 +207,11 @@ class ProductDetailScreen extends StatelessWidget {
                   // Collapsible Sections
                   _DetailSection(
                     title: 'Description',
-                    content: 'Crafted from premium heavy-weight mulberry silk, this midi dress features a classic wrap silhouette that defines the waist and flows elegantly into a soft A-line skirt. Perfect for both evening events and refined daytime looks.',
+                    content: product.description,
                     isOpen: true,
                   ),
-                  _DetailSection(title: 'Material & Care', content: '100% Mulberry Silk. Dry clean only.'),
-                  _DetailSection(title: 'Shipping', content: 'Free standard shipping on all orders over \$200.'),
+                  _DetailSection(title: 'Material & Care', content: 'Premium blend fabrics. Dry clean recommended to preserve garment quality and lifespan.'),
+                  _DetailSection(title: 'Shipping & Returns', content: 'Complimentary standard shipping on all orders over \$200. Hassle-free 30-day returns.'),
                   
                   const SizedBox(height: 40),
                   
@@ -221,18 +231,18 @@ class ProductDetailScreen extends StatelessWidget {
                         _RelatedProductCard(
                           name: 'Silk Pointed Heels',
                           price: r'$185.00',
-                          imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDv0kcPErFyvco1hXBR_2lSS4-XEzzQ-MLIJv55ww1wPLI4AkpzdZFSRU87OsKXqwGQDM-i9fUq0Z0QRyJp3ksNuNeurNdclnpKSWGuOdXXn05T4mQes_QKQ6XNl0dUerrhDfQ0OHKzMhNBElH_nHQkyFWDoIoU4quPt393qHjhW_mZiDLmT-cSre35itZiT4BDpWcOVIqoPNJLuHk0HnLqlphfHZox2JCeFTWAAHLPAkDsJ-QxxOvjwP1jHtYTCweaE76c55wl0BwH',
+                          imageUrl: 'assets/images/silk_pointed_heels.jpg',
                         ),
                         SizedBox(width: 16),
                         _RelatedProductCard(
                           name: 'Petite Leather Clutch',
                           price: r'$240.00',
-                          imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD2l8tT5gF1qQ_3d_q5mcEFGbZhQBC8GyOrWDa8cgPTg9PB5yCgIxX7ux-pHk9FAy0oJDvN0whgHOxpxZepuWanjVpJj55gdFlrQHOkkJmcmNX-M4jY3NMOhdISvLC9REQ0tdvIHfGUzImcxmvqURFtdtv0NgjFgcTPbG949-RDT2FckrohG0GQwvY580zRtWKGomXyoZX67oRLx28zmHCNuRiQhQ-sRrwcAvKMGBYsydPZmppe_lI3ongzU20U5w353ZOpKfRZK-F5',
+                          imageUrl: 'assets/images/petite_leather_clutch.jpg',
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 120),
                 ],
               ),
             ),
@@ -242,7 +252,7 @@ class ProductDetailScreen extends StatelessWidget {
       bottomSheet: Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
+          color: Colors.white.withOpacity(0.95),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -253,7 +263,6 @@ class ProductDetailScreen extends StatelessWidget {
         ),
         child: ElevatedButton(
           onPressed: () {
-            final provider = context.read<AppProvider>();
             if (!provider.isLoggedIn) {
               showDialog(
                 context: context,
@@ -282,13 +291,17 @@ class ProductDetailScreen extends StatelessWidget {
               return;
             }
             provider.addToCart(
-              'silk-midi-dress',
-              'Silk Wrap Midi Dress',
-              r'$129.00',
-              'https://lh3.googleusercontent.com/aida-public/AB6AXuARlxH4JLTDeSMu3rQLieuzQsZPie3Ww2EcEgU8KZvuJfLqG3Kt2eZmrYE4nHtH64qZWD-JU6iTkBoo0-2iFz3psLBK7cFAdo6WSJ0OYxmV9eedD4DtHWtpYk4CO1P7TqyM0r-XTbBCGVAIcYOn-zPdIhRWFRZMqiCEqp5cHf5V7xBjNI2-fpJ-udiS9-jm3V_NYd0YJ81j7Uf_12VsPQhtfO7tRxg5daVRhKA-8506Of8_zGdEZpbFOR-7RbcTgGfklAAuyKhcxJ_0',
+              product.id,
+              product.name,
+              product.price,
+              product.imageUrl,
             );
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Added to Cart')),
+              SnackBar(
+                content: Text('${product.name} added to cart'),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: AppTheme.primary,
+              ),
             );
           },
           style: ElevatedButton.styleFrom(
@@ -452,7 +465,7 @@ class _RelatedProductCard extends StatelessWidget {
               color: const Color(0xFFF6F3F2),
             ),
             clipBehavior: Clip.antiAlias,
-            child: Image.network(imageUrl, fit: BoxFit.cover),
+            child: Image.asset(imageUrl, fit: BoxFit.cover),
           ),
           const SizedBox(height: 12),
           Text(

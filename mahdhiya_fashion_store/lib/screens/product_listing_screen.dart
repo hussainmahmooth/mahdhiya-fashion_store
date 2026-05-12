@@ -138,7 +138,11 @@ class ProductListingScreen extends StatelessWidget {
                       final product = products[index % products.length];
                       
                       return GestureDetector(
-                        onTap: () => Navigator.pushNamed(context, '/product_detail'),
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          '/product_detail',
+                          arguments: product.id,
+                        ),
                         child: _ProductCard(
                           id: product.id,
                           name: product.name,
@@ -274,7 +278,7 @@ class _ProductCard extends StatelessWidget {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: Image.network(
+                  child: Image.asset(
                     imageUrl,
                     fit: BoxFit.cover,
                   ),

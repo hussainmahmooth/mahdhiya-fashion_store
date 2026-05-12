@@ -279,7 +279,7 @@ class _CartItem extends StatelessWidget {
               color: const Color(0xFFF6F3F2),
             ),
             clipBehavior: Clip.antiAlias,
-            child: Image.network(imageUrl, fit: BoxFit.cover),
+            child: Image.asset(imageUrl, fit: BoxFit.cover),
           ),
           const SizedBox(width: 16),
           Expanded(
