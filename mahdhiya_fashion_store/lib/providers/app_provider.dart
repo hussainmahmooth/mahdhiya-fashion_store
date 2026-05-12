@@ -94,6 +94,8 @@ class AppProvider extends ChangeNotifier {
   ];
 
   bool get isLoggedIn => _isLoggedIn;
+  String get userName => _userName;
+  String get userEmail => _userEmail;
   List<CartItem> get cartItems => _cartItems;
   Set<String> get wishlistIds => _wishlistIds;
   List<Product> get allProducts => _allProducts;
