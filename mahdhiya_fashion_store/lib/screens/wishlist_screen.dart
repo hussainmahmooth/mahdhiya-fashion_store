@@ -50,86 +50,79 @@ class WishlistScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 40, 24, 120),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'WISHLIST',
-                  style: textTheme.displayLarge?.copyWith(
-                    color: AppTheme.primary,
-                    fontSize: 48,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Consumer<AppProvider>(
-                  builder: (context, provider, _) {
-                    final wishlistProducts = provider.wishlistProducts;
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'CURATED PIECES (${wishlistProducts.length})',
-                          style: textTheme.labelSmall?.copyWith(
-                            color: AppTheme.outline,
-                            letterSpacing: 2.0,
-                          ),
-                        ),
-                        const SizedBox(height: 48),
-                        if (wishlistProducts.isEmpty)
-                          const Center(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 40),
-                              child: Text('Your wishlist is empty.'),
-                            ),
-                          )
-                        else
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 0.6,
-                              mainAxisSpacing: 32,
-                              crossAxisSpacing: 24,
-                            ),
-                            itemCount: wishlistProducts.length,
-                            itemBuilder: (context, index) {
-                              final product = wishlistProducts[index];
-                              return GestureDetector(
-                                onTap: () => Navigator.pushNamed(context, '/product_detail'),
-                                child: _WishlistItemCard(
-                                  id: product.id,
-                                  name: product.name,
-                                  category: product.category,
-                                  price: product.price,
-                                  imageUrl: product.imageUrl,
-                                ),
-                              );
-                            },
-                          ),
-                      ],
-                    );
-                  },
-                ),
-              ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(24, 40, 24, 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'WISHLIST',
+              style: textTheme.displayLarge?.copyWith(
+                color: AppTheme.primary,
+                fontSize: 48,
+                fontWeight: FontWeight.w900,
+              ),
             ),
-          ),
-          
-          // Bottom Navigation
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: _BottomNavBar(),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Consumer<AppProvider>(
+              builder: (context, provider, _) {
+                final wishlistProducts = provider.wishlistProducts;
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'CURATED PIECES (${wishlistProducts.length})',
+                      style: textTheme.labelSmall?.copyWith(
+                        color: AppTheme.outline,
+                        letterSpacing: 2.0,
+                      ),
+                    ),
+                    const SizedBox(height: 48),
+                    if (wishlistProducts.isEmpty)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 40),
+                          child: Text('Your wishlist is empty.'),
+                        ),
+                      )
+                    else
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.6,
+                          mainAxisSpacing: 32,
+                          crossAxisSpacing: 24,
+                        ),
+                        itemCount: wishlistProducts.length,
+                        itemBuilder: (context, index) {
+                          final product = wishlistProducts[index];
+                          return GestureDetector(
+                            onTap: () => Navigator.pushNamed(
+                              context, 
+                              '/product_detail',
+                              arguments: product.id,
+                            ),
+                            child: _WishlistItemCard(
+                              id: product.id,
+                              name: product.name,
+                              category: product.category,
+                              price: product.price,
+                              imageUrl: product.imageUrl,
+                            ),
+                          );
+                        },
+                      ),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
+      bottomNavigationBar: _BottomNavBar(),
     );
   }
 }

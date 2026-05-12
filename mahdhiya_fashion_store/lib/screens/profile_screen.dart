@@ -49,140 +49,129 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 32, 24, 120),
-            child: Column(
-              children: [
-                // Profile Header
-                Container(
-                  padding: const EdgeInsets.all(32),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: const Color(0xFF1A237E).withOpacity(0.05)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF1A237E).withOpacity(0.04),
-                        blurRadius: 20,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(24, 32, 24, 40),
+        child: Column(
+          children: [
+            // Profile Header
+            Container(
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: const Color(0xFF1A237E).withOpacity(0.05)),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF1A237E).withOpacity(0.04),
+                    blurRadius: 20,
+                    offset: const Offset(0, 4),
                   ),
-                  child: Row(
+                ],
+              ),
+              child: Row(
+                children: [
+                  Stack(
                     children: [
-                      Stack(
-                        children: [
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: const Color(0xFFBAEAFF), width: 3),
-                              image: const DecorationImage(
-                                image: AssetImage('assets/images/profile_avatar.jpg'),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: const Color(0xFFBAEAFF), width: 3),
+                          image: const DecorationImage(
+                            image: AssetImage('assets/images/profile_avatar.jpg'),
+                            fit: BoxFit.cover,
                           ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: const BoxDecoration(
-                                color: AppTheme.primary,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(Icons.edit, color: Colors.white, size: 16),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                      const SizedBox(width: 24),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              provider.userName,
-                              style: textTheme.headlineLarge?.copyWith(
-                                color: AppTheme.primary,
-                                fontSize: 24,
-                              ),
-                            ),
-                            Text(
-                              provider.userEmail,
-                              style: textTheme.bodySmall?.copyWith(color: AppTheme.outline),
-                            ),
-                            const SizedBox(height: 12),
-                            Wrap(
-                              spacing: 8,
-                              children: [
-                                _ProfileBadge(label: 'Gold Member', color: const Color(0xFFBAEAFF)),
-                                _ProfileBadge(label: '12 Orders', color: const Color(0xFFF0EDED)),
-                              ],
-                            ),
-                          ],
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: const BoxDecoration(
+                            color: AppTheme.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.edit, color: Colors.white, size: 16),
                         ),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 48),
-                
-                // Menu Sections
-                _MenuSection(
-                  title: 'ACCOUNT SETTINGS',
-                  items: [
-                    _MenuItem(icon: Icons.history, label: 'Order History', onTap: () {}),
-                    _MenuItem(icon: Icons.location_on_outlined, label: 'Saved Addresses', onTap: () {}),
-                    _MenuItem(icon: Icons.payments_outlined, label: 'Payment Methods', onTap: () {}),
-                    _MenuItem(icon: Icons.favorite_border, label: 'Wishlist', onTap: () => Navigator.pushNamed(context, '/wishlist')),
-                    _MenuItem(icon: Icons.notifications_none, label: 'Notifications', isLast: true, onTap: () {}),
-                  ],
-                ),
-                
-                const SizedBox(height: 48),
-                
-                // Logout Button
-                OutlinedButton(
-                  onPressed: () {
-                    context.read<AppProvider>().logout();
-                    Navigator.pushReplacementNamed(context, '/login');
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppTheme.secondary,
-                    side: const BorderSide(color: Color(0xFF9AE1FF), width: 2),
-                    minimumSize: const Size(200, 56),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(28),
+                  const SizedBox(width: 24),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          provider.userName,
+                          style: textTheme.headlineLarge?.copyWith(
+                            color: AppTheme.primary,
+                            fontSize: 24,
+                          ),
+                        ),
+                        Text(
+                          provider.userEmail,
+                          style: textTheme.bodySmall?.copyWith(color: AppTheme.outline),
+                        ),
+                        const SizedBox(height: 12),
+                        Wrap(
+                          spacing: 8,
+                          children: [
+                            const _ProfileBadge(label: 'Gold Member', color: Color(0xFFBAEAFF)),
+                            const _ProfileBadge(label: '12 Orders', color: Color(0xFFF0EDED)),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                  child: const Text('LOGOUT'),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'MAHDHIYA FASHION v2.4.0',
-                  style: textTheme.labelSmall?.copyWith(
-                    color: AppTheme.outline.withOpacity(0.5),
-                    letterSpacing: 1.0,
-                  ),
-                ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 48),
+            
+            // Menu Sections
+            _MenuSection(
+              title: 'ACCOUNT SETTINGS',
+              items: [
+                _MenuItem(icon: Icons.history, label: 'Order History', onTap: () {}),
+                _MenuItem(icon: Icons.location_on_outlined, label: 'Saved Addresses', onTap: () {}),
+                _MenuItem(icon: Icons.payments_outlined, label: 'Payment Methods', onTap: () {}),
+                _MenuItem(icon: Icons.favorite_border, label: 'Wishlist', onTap: () => Navigator.pushNamed(context, '/wishlist')),
+                _MenuItem(icon: Icons.notifications_none, label: 'Notifications', isLast: true, onTap: () {}),
               ],
             ),
-          ),
-          
-          // Bottom Navigation
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: _BottomNavBar(),
-          ),
-        ],
+            
+            const SizedBox(height: 48),
+            
+            // Logout Button
+            OutlinedButton(
+              onPressed: () {
+                context.read<AppProvider>().logout();
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppTheme.secondary,
+                side: const BorderSide(color: Color(0xFF9AE1FF), width: 2),
+                minimumSize: const Size(200, 56),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(28),
+                ),
+              ),
+              child: const Text('LOGOUT'),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'MAHDHIYA FASHION v2.4.0',
+              style: textTheme.labelSmall?.copyWith(
+                color: AppTheme.outline.withOpacity(0.5),
+                letterSpacing: 1.0,
+              ),
+            ),
+          ],
+        ),
       ),
+      bottomNavigationBar: _BottomNavBar(),
     );
   }
 }

@@ -305,9 +305,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(content: Text('Creating account...')),
                                       );
-                                      context.read<AppProvider>().login(
-                                        _emailController.text,
+                                      context.read<AppProvider>().register(
                                         _nameController.text,
+                                        _emailController.text,
                                       );
                                       Navigator.pushReplacementNamed(context, '/home');
                                     }

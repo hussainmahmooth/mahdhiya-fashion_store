@@ -44,6 +44,12 @@ class AppProvider extends ChangeNotifier {
   bool _isLoggedIn = false;
   String _userName = 'Guest';
   String _userEmail = 'guest@mahdhiya.com';
+  
+  // Simple in-memory user registry to simulate persistence/backend
+  final Map<String, String> _registeredUsers = {
+    'sarah.jansen@example.com': 'Sarah Jansen', // Default user
+  };
+
   final List<CartItem> _cartItems = [];
   final Set<String> _wishlistIds = {};
 
@@ -112,10 +118,16 @@ class AppProvider extends ChangeNotifier {
   }
 
   // Auth Methods
-  void login(String email, [String? name]) {
+  void register(String name, String email) {
+    _registeredUsers[email] = name;
+    login(email);
+  }
+
+  void login(String email) {
     _isLoggedIn = true;
     _userEmail = email;
-    if (name != null) _userName = name;
+    // Retrieve username from registry or use email prefix if not found
+    _userName = _registeredUsers[email] ?? email.split('@')[0];
     notifyListeners();
   }
 
