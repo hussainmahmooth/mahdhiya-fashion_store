@@ -293,42 +293,79 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 const SizedBox(height: 32),
                                 
                                 // Sign Up Button
-                                ElevatedButton(
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      if (!_termsAccepted) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text('Please accept the terms')),
-                                        );
-                                        return;
-                                      }
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Creating account...')),
-                                      );
-                                      context.read<AppProvider>().register(
-                                        _nameController.text,
-                                        _emailController.text,
-                                      );
-                                      Navigator.pushReplacementNamed(context, '/home');
-                                    }
+                                Consumer<AppProvider>(
+                                  builder: (context, provider, child) {
+                                    return ElevatedButton(
+                                      onPressed: provider.isLoading
+                                          ? null
+                                          : () async {
+                                              if (_formKey.currentState!.validate()) {
+                                                if (!_termsAccepted) {
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text('Please accept the terms and conditions'),
+                                                      backgroundColor: Colors.redAccent,
+                                                    ),
+                                                  );
+                                                  return;
+                                                }
+
+                                                bool success = await provider.signUp(
+                                                  fullName: _nameController.text,
+                                                  email: _emailController.text,
+                                                  password: _passwordController.text,
+                                                );
+
+                                                if (success) {
+                                                  if (context.mounted) {
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text('Account created successfully! Welcome to MAHDHIYA FASHION.'),
+                                                        backgroundColor: Colors.green,
+                                                      ),
+                                                    );
+                                                    Navigator.pushReplacementNamed(context, '/home');
+                                                  }
+                                                } else {
+                                                  if (context.mounted && provider.errorMessage != null) {
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(provider.errorMessage!),
+                                                        backgroundColor: Colors.redAccent,
+                                                      ),
+                                                    );
+                                                  }
+                                                }
+                                              }
+                                            },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppTheme.primary,
+                                        foregroundColor: Colors.white,
+                                        minimumSize: const Size(double.infinity, 56),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        elevation: 8,
+                                        shadowColor: AppTheme.primary.withOpacity(0.2),
+                                      ),
+                                      child: provider.isLoading
+                                          ? const SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white,
+                                                strokeWidth: 2,
+                                              ),
+                                            )
+                                          : Text(
+                                              'SIGN UP',
+                                              style: textTheme.labelLarge?.copyWith(
+                                                letterSpacing: 2.0,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                    );
                                   },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppTheme.primary,
-                                    foregroundColor: Colors.white,
-                                    minimumSize: const Size(double.infinity, 56),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    elevation: 8,
-                                    shadowColor: AppTheme.primary.withOpacity(0.2),
-                                  ),
-                                  child: Text(
-                                    'SIGN UP',
-                                    style: textTheme.labelLarge?.copyWith(
-                                      letterSpacing: 2.0,
-                                      color: Colors.white,
-                                    ),
-                                  ),
                                 ),
                                 const SizedBox(height: 24),
                                 

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../services/firebase_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class Product {
   final String id;
@@ -44,7 +47,11 @@ class AppProvider extends ChangeNotifier {
   bool _isLoggedIn = false;
   String _userName = 'Guest';
   String _userEmail = 'guest@mahdhiya.com';
-  
+
+  final FirebaseService _firebaseService = FirebaseService();
+  bool _isLoading = false;
+  String? _errorMessage;
+
   // Simple in-memory user registry to simulate persistence/backend
   final Map<String, String> _registeredUsers = {
     'sarah.jansen@example.com': 'Sarah Jansen', // Default user
@@ -102,6 +109,8 @@ class AppProvider extends ChangeNotifier {
   bool get isLoggedIn => _isLoggedIn;
   String get userName => _userName;
   String get userEmail => _userEmail;
+  bool get isLoading => _isLoading;
+  String? get errorMessage => _errorMessage;
   List<CartItem> get cartItems => _cartItems;
   Set<String> get wishlistIds => _wishlistIds;
   List<Product> get allProducts => _allProducts;
@@ -118,9 +127,37 @@ class AppProvider extends ChangeNotifier {
   }
 
   // Auth Methods
-  void register(String name, String email) {
-    _registeredUsers[email] = name;
-    login(email);
+  Future<bool> signUp({
+    required String fullName,
+    required String email,
+    required String password,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      UserCredential? result = await _firebaseService.signUp(
+        fullName: fullName,
+        email: email,
+        password: password,
+      );
+
+      if (result != null) {
+        _isLoggedIn = true;
+        _userName = fullName;
+        _userEmail = email;
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      _errorMessage = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
   }
 
   void login(String email) {
