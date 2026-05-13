@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
-class SplashScreen extends StatelessWidget {
+import 'package:provider/provider.dart';
+import '../providers/app_provider.dart';
+
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Initialize products from Firestore
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AppProvider>().initializeDemoProducts();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

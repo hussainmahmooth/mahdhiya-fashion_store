@@ -2,9 +2,57 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
+import 'dart:convert';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  bool _isEditing = false;
+  late TextEditingController _nameController;
+  
+  @override
+  void initState() {
+    super.initState();
+    final provider = context.read<AppProvider>();
+    _nameController = TextEditingController(text: provider.userName);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleImagePick() async {
+    final provider = context.read<AppProvider>();
+    final base64Image = await provider.pickAndConvertImage();
+    if (base64Image != null) {
+      await provider.updateProfile(base64Image: base64Image);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile image updated successfully.')),
+      );
+    }
+  }
+
+  Future<void> _handleProfileUpdate() async {
+    final provider = context.read<AppProvider>();
+    try {
+      await provider.updateProfile(fullName: _nameController.text);
+      setState(() => _isEditing = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile updated successfully.')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Update failed: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +84,16 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: Color(0xFF1A237E)),
-            onPressed: () {},
-          ),
+          if (_isEditing)
+            IconButton(
+              icon: const Icon(Icons.check, color: AppTheme.primary),
+              onPressed: _handleProfileUpdate,
+            )
+          else
+            IconButton(
+              icon: const Icon(Icons.edit_note, color: AppTheme.primary),
+              onPressed: () => setState(() => _isEditing = true),
+            ),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
@@ -70,46 +124,68 @@ class ProfileScreen extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Stack(
-                    children: [
-                      Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: const Color(0xFFBAEAFF), width: 3),
-                          image: const DecorationImage(
-                            image: AssetImage('assets/images/profile_avatar.jpg'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: const BoxDecoration(
-                            color: AppTheme.primary,
+                  GestureDetector(
+                    onTap: _handleImagePick,
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
+                            border: Border.all(color: const Color(0xFFBAEAFF), width: 3),
+                            image: provider.profileImageUrl != null
+                                ? DecorationImage(
+                                    image: MemoryImage(base64Decode(provider.profileImageUrl!)),
+                                    fit: BoxFit.cover,
+                                  )
+                                : const DecorationImage(
+                                    image: AssetImage('assets/images/profile_avatar.jpg'),
+                                    fit: BoxFit.cover,
+                                  ),
                           ),
-                          child: const Icon(Icons.edit, color: Colors.white, size: 16),
+                          child: provider.isLoading 
+                            ? const Center(child: CircularProgressIndicator(strokeWidth: 2)) 
+                            : null,
                         ),
-                      ),
-                    ],
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: const BoxDecoration(
+                              color: AppTheme.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.camera_alt, color: Colors.white, size: 16),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(width: 24),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          provider.userName,
-                          style: textTheme.headlineLarge?.copyWith(
-                            color: AppTheme.primary,
-                            fontSize: 24,
+                        if (_isEditing)
+                          TextField(
+                            controller: _nameController,
+                            style: textTheme.headlineLarge?.copyWith(fontSize: 20),
+                            decoration: const InputDecoration(
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(vertical: 8),
+                            ),
+                          )
+                        else
+                          Text(
+                            provider.userName,
+                            style: textTheme.headlineLarge?.copyWith(
+                              color: AppTheme.primary,
+                              fontSize: 24,
+                            ),
                           ),
-                        ),
+                        const SizedBox(height: 4),
                         Text(
                           provider.userEmail,
                           style: textTheme.bodySmall?.copyWith(color: AppTheme.outline),

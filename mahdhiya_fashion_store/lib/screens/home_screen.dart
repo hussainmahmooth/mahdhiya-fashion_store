@@ -191,7 +191,7 @@ class HomeScreen extends StatelessWidget {
                         childAspectRatio: 0.7,
                         children: products.map((product) => _buildProductItem(
                           context, 
-                          product.id, 
+                          product.id!, 
                           product.name, 
                           product.price, 
                           product.imageUrl,
@@ -321,7 +321,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProductItem(BuildContext context, String id, String title, String price, String imageUrl) {
+  Widget _buildProductItem(BuildContext context, String id, String title, double price, String imageUrl) {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(
         context, 
@@ -356,49 +356,49 @@ class HomeScreen extends StatelessWidget {
                   child: Consumer<AppProvider>(
                     builder: (context, provider, _) {
                       final isFavorite = provider.isInWishlist(id);
-                      return GestureDetector(
-                        onTap: () {
-                          if (!provider.isLoggedIn) {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Login Required'),
-                                content: const Text('Please login to add items to your wishlist.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: const Text('CANCEL'),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      Navigator.pushNamed(context, '/login');
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppTheme.primary,
-                                      foregroundColor: Colors.white,
-                                    ),
-                                    child: const Text('LOGIN'),
-                                  ),
-                                ],
+                      return Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              if (!provider.isLoggedIn) {
+                                _showLoginDialog(context);
+                                return;
+                              }
+                              provider.addToCart(id, title, '\$${price.toStringAsFixed(2)}', imageUrl);
+                              Navigator.pushNamed(context, '/cart');
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.8),
+                                shape: BoxShape.circle,
                               ),
-                            );
-                            return;
-                          }
-                          provider.toggleWishlist(id);
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.8),
-                            shape: BoxShape.circle,
+                              child: const Icon(Icons.add_shopping_cart, size: 18, color: AppTheme.secondary),
+                            ),
                           ),
-                          child: Icon(
-                            isFavorite ? Icons.favorite : Icons.favorite_border,
-                            size: 18,
-                            color: isFavorite ? Colors.red : AppTheme.secondary,
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () {
+                              if (!provider.isLoggedIn) {
+                                _showLoginDialog(context);
+                                return;
+                              }
+                              provider.toggleWishlist(id);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.8),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                isFavorite ? Icons.favorite : Icons.favorite_border,
+                                size: 18,
+                                color: isFavorite ? Colors.red : AppTheme.secondary,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       );
                     },
                   ),
@@ -416,7 +416,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           Text(
-            price,
+            '\$${price.toStringAsFixed(2)}',
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -481,6 +481,33 @@ class HomeScreen extends StatelessWidget {
               letterSpacing: 0.5,
               color: isActive ? AppTheme.primary : const Color(0xFF9AE1FF),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Login Required'),
+        content: const Text('Please login to access your account features.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('CANCEL'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/login');
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primary,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('LOGIN'),
           ),
         ],
       ),

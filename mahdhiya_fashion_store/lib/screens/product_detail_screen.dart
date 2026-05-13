@@ -38,10 +38,10 @@ class ProductDetailScreen extends StatelessWidget {
               backgroundColor: Colors.white.withOpacity(0.8),
               child: IconButton(
                 icon: Icon(
-                  provider.isInWishlist(product.id) ? Icons.favorite : Icons.favorite_border,
-                  color: provider.isInWishlist(product.id) ? Colors.red : AppTheme.secondary,
+                  provider.isInWishlist(product.id!) ? Icons.favorite : Icons.favorite_border,
+                  color: provider.isInWishlist(product.id!) ? Colors.red : AppTheme.secondary,
                 ),
-                onPressed: () => provider.toggleWishlist(product.id),
+                onPressed: () => provider.toggleWishlist(product.id!),
               ),
             ),
           ),
@@ -140,7 +140,7 @@ class ProductDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    product.price,
+                    '\$${product.price.toStringAsFixed(2)}',
                     style: textTheme.headlineMedium?.copyWith(
                       color: AppTheme.primary,
                       fontWeight: FontWeight.bold,
@@ -291,9 +291,9 @@ class ProductDetailScreen extends StatelessWidget {
               return;
             }
             provider.addToCart(
-              product.id,
+              product.id!,
               product.name,
-              product.price,
+              '\$${product.price.toStringAsFixed(2)}',
               product.imageUrl,
             );
             ScaffoldMessenger.of(context).showSnackBar(
@@ -303,6 +303,8 @@ class ProductDetailScreen extends StatelessWidget {
                 backgroundColor: AppTheme.primary,
               ),
             );
+            // Navigate to Cart page
+            Navigator.pushNamed(context, '/cart');
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.primary,

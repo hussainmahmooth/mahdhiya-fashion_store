@@ -144,7 +144,7 @@ class ProductListingScreen extends StatelessWidget {
                           arguments: product.id,
                         ),
                         child: _ProductCard(
-                          id: product.id,
+                          id: product.id ?? '',
                           name: product.name,
                           price: product.price,
                           imageUrl: product.imageUrl,
@@ -245,7 +245,7 @@ class _FilterButton extends StatelessWidget {
 class _ProductCard extends StatelessWidget {
   final String id;
   final String name;
-  final String price;
+  final double price;
   final String imageUrl;
 
   const _ProductCard({
@@ -289,50 +289,51 @@ class _ProductCard extends StatelessWidget {
                   child: Consumer<AppProvider>(
                     builder: (context, provider, _) {
                       final isFavorite = provider.isInWishlist(id);
-                      return GestureDetector(
-                        onTap: () {
-                          if (!provider.isLoggedIn) {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Login Required'),
-                                content: const Text('Please login to add items to your wishlist.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: const Text('CANCEL'),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      Navigator.pushNamed(context, '/login');
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppTheme.primary,
-                                      foregroundColor: Colors.white,
-                                    ),
-                                    child: const Text('LOGIN'),
-                                  ),
-                                ],
+                      return Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              if (!provider.isLoggedIn) {
+                                _showLoginDialog(context);
+                                return;
+                              }
+                              provider.addToCart(id, name, '\$${price.toStringAsFixed(2)}', imageUrl);
+                              Navigator.pushNamed(context, '/cart');
+                            },
+                            child: Container(
+                              height: 36,
+                              width: 36,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.8),
+                                shape: BoxShape.circle,
                               ),
-                            );
-                            return;
-                          }
-                          provider.toggleWishlist(id);
-                        },
-                        child: Container(
-                          height: 36,
-                          width: 36,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.8),
-                            shape: BoxShape.circle,
+                              child: const Icon(Icons.add_shopping_cart, size: 18, color: AppTheme.secondary),
+                            ),
                           ),
-                          child: Icon(
-                            isFavorite ? Icons.favorite : Icons.favorite_border,
-                            size: 20,
-                            color: isFavorite ? Colors.red : AppTheme.secondary,
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () {
+                              if (!provider.isLoggedIn) {
+                                _showLoginDialog(context);
+                                return;
+                              }
+                              provider.toggleWishlist(id);
+                            },
+                            child: Container(
+                              height: 36,
+                              width: 36,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.8),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                isFavorite ? Icons.favorite : Icons.favorite_border,
+                                size: 20,
+                                color: isFavorite ? Colors.red : AppTheme.secondary,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       );
                     },
                   ),
@@ -354,12 +355,39 @@ class _ProductCard extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          price,
+          '\$${price.toStringAsFixed(2)}',
           style: theme.textTheme.labelLarge?.copyWith(
             color: AppTheme.secondary,
           ),
         ),
       ],
+    );
+  }
+
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Login Required'),
+        content: const Text('Please login to access your account features.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('CANCEL'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/login');
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primary,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('LOGIN'),
+          ),
+        ],
+      ),
     );
   }
 }

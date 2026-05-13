@@ -106,7 +106,7 @@ class WishlistScreen extends StatelessWidget {
                               arguments: product.id,
                             ),
                             child: _WishlistItemCard(
-                              id: product.id,
+                              id: product.id!,
                               name: product.name,
                               category: product.category,
                               price: product.price,
@@ -131,7 +131,7 @@ class _WishlistItemCard extends StatelessWidget {
   final String id;
   final String name;
   final String category;
-  final String price;
+  final double price;
   final String imageUrl;
 
   const _WishlistItemCard({
@@ -216,7 +216,7 @@ class _WishlistItemCard extends StatelessWidget {
                         );
                         return;
                       }
-                      provider.addToCart(id, name, price, imageUrl);
+                      provider.addToCart(id, name, '\$${price.toStringAsFixed(2)}', imageUrl);
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Added to Cart')),
                       );
@@ -265,7 +265,7 @@ class _WishlistItemCard extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              price,
+              '\$${price.toStringAsFixed(2)}',
               style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.secondary),
             ),
           ],

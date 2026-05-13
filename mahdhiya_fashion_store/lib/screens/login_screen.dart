@@ -209,37 +209,68 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           const SizedBox(height: 32),
-                          ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                // Simulate login process
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Logging in...'),
-                                    duration: Duration(seconds: 1),
+                          Consumer<AppProvider>(
+                            builder: (context, provider, child) {
+                              return ElevatedButton(
+                                onPressed: provider.isLoading
+                                    ? null
+                                    : () async {
+                                        if (_formKey.currentState!.validate()) {
+                                          bool success = await provider.login(
+                                            _emailController.text,
+                                            _passwordController.text,
+                                          );
+
+                                          if (success) {
+                                            if (context.mounted) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text('Login Successful!'),
+                                                  backgroundColor: Colors.green,
+                                                ),
+                                              );
+                                              Navigator.pushReplacementNamed(context, '/home');
+                                            }
+                                          } else {
+                                            if (context.mounted && provider.errorMessage != null) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(provider.errorMessage!),
+                                                  backgroundColor: Colors.redAccent,
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        }
+                                      },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppTheme.primary,
+                                  foregroundColor: AppTheme.onPrimary,
+                                  minimumSize: const Size(double.infinity, 56),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                );
-                                context.read<AppProvider>().login(_emailController.text);
-                                Navigator.pushReplacementNamed(context, '/home');
-                              }
+                                  elevation: 4,
+                                  shadowColor: AppTheme.primary.withOpacity(0.15),
+                                ),
+                                child: provider.isLoading
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Text(
+                                        'LOGIN',
+                                        style: TextStyle(
+                                          letterSpacing: 1.5,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                              );
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.primary,
-                              foregroundColor: AppTheme.onPrimary,
-                              minimumSize: const Size(double.infinity, 56),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 4,
-                              shadowColor: AppTheme.primary.withOpacity(0.15),
-                            ),
-                            child: const Text(
-                              'LOGIN',
-                              style: TextStyle(
-                                letterSpacing: 1.5,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
                           ),
                         ],
                       ),

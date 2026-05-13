@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
+import '../models/cart_model.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -48,9 +49,15 @@ class CartScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Consumer<AppProvider>(
-                  builder: (context, provider, _) {
-                    final items = provider.cartItems;
+                 StreamBuilder<List<CartModel>>(
+                  stream: context.read<AppProvider>().cartStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    
+                    final items = snapshot.data ?? [];
+                    
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -78,79 +85,18 @@ class CartScreen extends StatelessWidget {
                           ...items.map((item) => Padding(
                             padding: const EdgeInsets.only(bottom: 16),
                             child: _CartItem(
-                              id: item.id,
-                              name: item.name,
-                              details: 'Quantity: ${item.quantity}',
-                              price: '\$${(item.priceValue * item.quantity).toStringAsFixed(2)}',
-                              imageUrl: item.imageUrl,
-                              quantity: item.quantity,
+                              item: item,
                             ),
                           )).toList(),
+                        
+                        const SizedBox(height: 40),
+                        
+                        // Order Summary
+                        _OrderSummary(items: items),
                       ],
                     );
                   },
                 ),
-                
-                const SizedBox(height: 32),
-                
-                // Promo Code Section
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF0F7FF).withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xFFBAE1FF).withOpacity(0.5)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'ADD PROMO CODE',
-                        style: textTheme.labelMedium?.copyWith(
-                          color: AppTheme.primary,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: 'Enter code',
-                                filled: true,
-                                fillColor: Colors.white,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(color: Color(0xFFBAE1FF)),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          OutlinedButton(
-                            onPressed: () {},
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppTheme.primary,
-                              side: const BorderSide(color: AppTheme.primary),
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: const Text('APPLY'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                
-                const SizedBox(height: 40),
-                
-                // Order Summary
-                const _OrderSummary(),
               ],
             ),
           ),
@@ -234,20 +180,10 @@ class CartScreen extends StatelessWidget {
 }
 
 class _CartItem extends StatelessWidget {
-  final String id;
-  final String name;
-  final String details;
-  final String price;
-  final String imageUrl;
-  final int quantity;
+  final CartModel item;
 
   const _CartItem({
-    required this.id,
-    required this.name,
-    required this.details,
-    required this.price,
-    required this.imageUrl,
-    required this.quantity,
+    required this.item,
   });
 
   @override
@@ -279,7 +215,7 @@ class _CartItem extends StatelessWidget {
               color: const Color(0xFFF6F3F2),
             ),
             clipBehavior: Clip.antiAlias,
-            child: Image.asset(imageUrl, fit: BoxFit.cover),
+            child: Image.asset(item.productImage, fit: BoxFit.cover),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -291,7 +227,7 @@ class _CartItem extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        name,
+                        item.productName,
                         style: theme.textTheme.headlineMedium?.copyWith(
                           fontSize: 18,
                           color: AppTheme.onSurface,
@@ -299,14 +235,14 @@ class _CartItem extends StatelessWidget {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => context.read<AppProvider>().removeFromCart(id),
+                      onTap: () => context.read<AppProvider>().removeFromCart(item.productId),
                       child: Icon(Icons.delete_outline, color: AppTheme.outline, size: 20),
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  details,
+                  'Exclusive Selection',
                   style: theme.textTheme.bodySmall?.copyWith(color: AppTheme.outline),
                 ),
                 const SizedBox(height: 20),
@@ -323,22 +259,22 @@ class _CartItem extends StatelessWidget {
                       child: Row(
                         children: [
                           GestureDetector(
-                            onTap: () => context.read<AppProvider>().updateQuantity(id, -1),
+                            onTap: () => context.read<AppProvider>().updateCartQuantity(item.productId, item.quantity - 1, item.price),
                             child: const Icon(Icons.remove, size: 16, color: AppTheme.primary),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Text('$quantity', style: const TextStyle(fontWeight: FontWeight.bold)),
+                            child: Text('${item.quantity}', style: const TextStyle(fontWeight: FontWeight.bold)),
                           ),
                           GestureDetector(
-                            onTap: () => context.read<AppProvider>().updateQuantity(id, 1),
+                            onTap: () => context.read<AppProvider>().updateCartQuantity(item.productId, item.quantity + 1, item.price),
                             child: const Icon(Icons.add, size: 16, color: AppTheme.primary),
                           ),
                         ],
                       ),
                     ),
                     Text(
-                      price,
+                      '\$${item.totalPrice.toStringAsFixed(2)}',
                       style: theme.textTheme.headlineMedium?.copyWith(
                         fontSize: 18,
                         color: AppTheme.primary,
@@ -357,13 +293,13 @@ class _CartItem extends StatelessWidget {
 }
 
 class _OrderSummary extends StatelessWidget {
-  const _OrderSummary();
+  final List<CartModel> items;
+  const _OrderSummary({required this.items});
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final provider = context.watch<AppProvider>();
-    final subtotal = provider.cartTotal;
+    final subtotal = items.fold(0.0, (sum, item) => sum + item.totalPrice);
     
     return Container(
       padding: const EdgeInsets.all(24),

@@ -324,7 +324,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                         backgroundColor: Colors.green,
                                                       ),
                                                     );
-                                                    Navigator.pushReplacementNamed(context, '/home');
+                                                    Navigator.pushReplacementNamed(context, '/login');
                                                   }
                                                 } else {
                                                   if (context.mounted && provider.errorMessage != null) {
